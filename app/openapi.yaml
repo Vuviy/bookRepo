@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  title: Get and create book API
+  version: 1.0.0
+  description: API for create and get book
+servers:
+  - url: http://localhost
+paths:
+  /api/book/create:
+    post:
+      summary: Creating new book
+      description: Create a new book by data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of book
+                  example: "Refactoring: Improving the Design of Existing Code"
+                publisher_id:
+                  type: integer
+                  description: Id of publisher
+                  example: 7
+                authors:
+                  type: array
+                  description: array of id of authors
+                  example: [7, 16, 78]
+              required:
+                - title
+                - publisher_id
+                - authors
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Book created"
+        '400':
+          description: Error
+        '500':
+          description: Server error
+  /api/getBooks?perPage=1:
+    get:
+      summary: Get all books with pagination
+      description: Get all books with pagination
+      parameters:
+        - name: perPage
+          in: query
+          description: Number of books per page
+          required: false
+          schema:
+            type: integer
+            default: 15
+      responses:
+        '200':
+          description: Successful response with book details and pagination info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 19
+                  title:
+                    type: string
+                    example: "The Great Gatsby"
+                  publisher:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 20
+                      name:
+                        type: string
+                        example: "Scribner"
+                  authors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 20
+                        name:
+                          type: string
+                          example: "F. Scott Fitzgerald"
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2024-10-01 11:10:44"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                    example: null
+                  links:
+                    type: object
+                    properties:
+                      first:
+                        type: string
+                        example: "http://localhost/api/getBook?page=1"
+                      last:
+                        type: string
+                        example: "http://localhost/api/getBook?page=14"
+                      prev:
+                        type: string
+                        nullable: true
+                        example: null
+                      next:
+                        type: string
+                        example: "http://localhost/api/getBook?page=2"
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      from:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 14
+                      links:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              nullable: true
+                              example: null
+                            label:
+                              type: string
+                              example: "&laquo; Previous"
+                            active:
+                              type: boolean
+                              example: false
+                      path:
+                        type: string
+                        example: "http://localhost/api/getBook"
+                      per_page:
+                        type: integer
+                        example: 1
+                      to:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 14
+        '400':
+          description: Error
+        '500':
+          description: Server error
